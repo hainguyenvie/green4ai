@@ -9,8 +9,13 @@ dependencies = [
     "ultralytics",
     "pillow",
     "opencv-python",
-    "numpy"
+    "numpy",
+    "python-multipart"
 ]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
 
 [tool.uv.sources]
 vocos = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
@@ -342,7 +347,7 @@ lagent = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 laion-clap = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 lale = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 lama-cleaner = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
-lancedb = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
+lancedb = [{ index = "pytorch-cpu", marker ='Linux'" }]
 langcheck = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 langkit = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 langroid = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
