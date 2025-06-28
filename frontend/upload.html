@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 4 green: Trí tuệ xanh cho giáo dục</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: #059669;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(20px);
+      z-index: 50;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    /* Nền và trang trí */
+    body {
+      background: linear-gradient(135deg, #d1fae5, #e0f7fa);
+      font-family: 'Inter', sans-serif;
+      color: #1f2937;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: #f59e0b;
+      border-radius: 50%;
+      top: 5%;
+      left: 4%;
+      animation: float 4s infinite ease-in-out;
+    }
+    body::after {
+      content: '★';
+      position: absolute;
+      font-size: 1.75rem;
+      color: #ec4899;
+      top: 10%;
+      right: 5%;
+      animation: twinkle 2.5s infinite;
+    }
+
+    /* Card */
+    .fun-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .fun-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    .fun-card::after {
+      content: '✨';
+      position: absolute;
+      top: -12px;
+      right: 12px;
+      font-size: 1.25rem;
+      color: #ec4899;
+      opacity: 0.8;
+    }
+
+    /* Badge */
+    .badge {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      background: #f59e0b;
+      color: #1f2937;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Nút */
+    .fun-btn {
+      background: linear-gradient(45deg, #f59e0b, #ec4899);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .fun-btn:hover {
+      background: linear-gradient(45deg, #d97706, #db2777);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .fun-btn:active {
+      transform: translateY(0);
+    }
+    .fun-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Input và select */
+    input, select {
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    }
+    input::placeholder, select option:disabled {
+      color: #6b7280;
+      opacity: 1;
+    }
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f59e0b;
+      border-top-color: #ec4899;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Header và Footer */
+    header, footer {
+      background: #047857;
+      color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    /* Icon */
+    .icon-star::before {
+      content: "✨";
+      margin-right: 8px;
+      font-size: 1.25rem;
+    }
+
+    /* Liên kết dự án */
+    .project-link {
+      cursor: pointer;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .project-link:hover {
+      color: #f59e0b;
+    }
+    .project-link .tooltip {
+      display: none;
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 10;
+    }
+    .project-link:hover .tooltip {
+      display: block;
+    }
+
+    /* Ảnh minh họa dự án */
+    .project-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive grid */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .fun-card {
+        padding: 1.5rem;
+      }
+      .fun-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+      .grid-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .fun-card:hover {
+        transform: none;
+      }
+      .project-link .tooltip {
+        display: none;
+      }
+      .project-image {
+        height: 120px;
+      }
+    }
+
+    /* Tăng khoảng cách trong itemList */
+    #itemList li {
+      padding: 0.75rem 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6 md:p-12">
+  <header class="text-white mb-10 text-center">
+    <h1 class="text-3xl md:text-4xl font-bold flex items-center justify-center">
+      <span class="icon-star"></span>AI 4 green: Trí tuệ xanh cho giáo dục
+    </h1>
+    <p class="text-base mt-2 opacity-90">05:36 PM, Thứ 7, 28/06/2025</p>
+  </header>
+
+  <main class="container mx-auto max-w-5xl">
+    <div id="uploadSection" class="fun-card text-center mb-10 fade-in">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Tải Ảnh Lên Để Khám Phá</h2>
+      <p class="text-base text-gray-600 mb-6 max-w-lg mx-auto">Chụp ảnh vật liệu tái chế và để AI gợi ý dự án sáng tạo!</p>
+      <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+        <div class="relative w-full sm:w-1/2">
+          <label class="flex items-center cursor-pointer bg-gray-50 border border-gray-300 rounded-lg p-2.5 hover:border-amber-500 transition">
+            <span class="text-gray-600 font-medium mr-2">Chọn ảnh</span>
+            <input type="file" id="uploadInput" accept="image/*" multiple class="hidden" aria-label="Chọn ảnh vật liệu để phân tích">
+            <span class="fun-btn flex-1 text-center"><i class="ri-image-line"></i> Chọn</span>
+          </label>
+        </div>
+        <button onclick="analyzeImages()" class="fun-btn" title="Phân tích ảnh để tìm vật liệu" aria-label="Phân tích ảnh để tìm vật liệu"><i class="ri-image-line"></i> Phân Tích</button>
+      </div>
+      <div id="progress" class="hidden text-center mt-4 text-base font-medium text-gray-600">
+        <span class="spinner"></span> Đang phân tích...
+      </div>
+      <div id="results" class="mt-6"></div>
+    </div>
+
+    <div id="summary" class="hidden fun-card mb-10 fade-in">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Tổng Kết Vật Phẩm</h2>
+      <ul id="itemList" class="space-y-4 mb-6"></ul>
+      <h3 class="text-xl font-semibold text-gray-700 mt-6 mb-4">Thêm Vật Phẩm Mới</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center">
+          <select id="addItemSelect" class="w-full sm:w-1/2" placeholder="Chọn vật liệu" aria-label="Chọn vật liệu để thêm">
+            <option value="" disabled selected>Chọn vật liệu</option>
+          </select>
+          <input type="number" id="addItemCount" min="1" value="1" class="w-20" placeholder="Số lượng" aria-label="Số lượng vật liệu">
+          <button onclick="addItem()" class="fun-btn" title="Thêm vật liệu bằng tay" aria-label="Thêm vật liệu bằng tay"><i class="ri-add-line"></i> Thêm</button>
+        </div>
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center">
+          <div class="relative w-full sm:w-auto">
+            <label class="flex items-center cursor-pointer bg-gray-50 border border-gray-300 rounded-lg p-2.5 hover:border-amber-500 transition">
+              <span class="text-gray-600 font-medium mr-2">Chọn ảnh bổ sung</span>
+              <input type="file" id="addImageInput" accept="image/*" multiple class="hidden" aria-label="Chọn ảnh bổ sung để phân tích">
+              <span class="fun-btn flex-1 text-center"><i class="ri-image-add-line"></i> Chọn</span>
+            </label>
+          </div>
+          <button onclick="addMoreImages()" class="fun-btn" title="Tải ảnh để bổ sung vật liệu" aria-label="Tải ảnh để bổ sung vật liệu"><i class="ri-image-add-line"></i> Tải Ảnh</button>
+        </div>
+      </div>
+      <div class="flex justify-between mt-6">
+        <button onclick="goBackToUpload()" class="fun-btn" title="Quay lại màn hình tải ảnh" aria-label="Quay lại màn hình tải ảnh"><i class="ri-arrow-left-line"></i> Quay Lại</button>
+        <button onclick="submitMaterials()" class="fun-btn" title="Khám phá các dự án sáng tạo" aria-label="Khám phá các dự án sáng tạo"><i class="ri-lightbulb-line"></i> Khám Phá Dự Án</button>
+      </div>
+    </div>
+
+    <div id="projectResults" class="hidden fun-card fade-in">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Dự Án Sáng Tạo</h2>
+      <div id="projectList" class="grid-container"></div>
+    </div>
+
+    <div id="toast" class="toast flex items-center justify-between">
+      <span id="toastMessage"></span>
+      <button onclick="closeToast()" class="ml-4 text-white hover:text-gray-200"><i class="ri-close-line"></i></button>
+    </div>
+  </main>
+
+  <footer class="text-center text-white mt-12">
+    <p class="text-base">© 2025 AI 4 green: Trí tuệ xanh cho giáo dục</p>
+    <p class="text-sm mt-2 opacity-90">Liên hệ: <a href="mailto:contact@ai4green.com" class="underline hover:text-amber-200 transition">contact@ai4green.com</a> | Cùng nhau tái chế, bảo vệ Trái Đất!</p>
+  </footer>
+
+  <script>
+    // Ánh xạ nhãn vật liệu sang tên dễ đọc
+    const labelMap = {
+      "chai_nuoc": "Chai nước",
+      "nap_chai": "Nắp chai",
+      "que_de_luoi": "Que đè lưỡi",
+      "que_xien": "Que xiên",
+      "bong_bay": "Bóng bay",
+      "nit": "Nút",
+      "giay_mau": "Giấy màu",
+      "ong_hut": "Ống hút",
+      "bia_cat_tong": "Bìa cát tông"
+    };
+
+    const modelLabels = [
+      "chai_nuoc", "nap_chai", "que_de_luoi", "que_xien",
+      "bong_bay", "nit", "giay_mau", "ong_hut", "bia_cat_tong"
+    ];
+
+    const totalCounts = {
+      "chai_nuoc": 2,
+      "nap_chai": 5,
+      "que_xien": 3,
+      "bia_cat_tong": 1
+    };
+
+    const projects = {
+      "du_an_thung_rac": { 
+        "name": "Thùng Rác Sáng Tạo", 
+        "materials": { "bia_cat_tong": 1 },
+        "image": "https://i.postimg.cc/BZFDqBmv/3.png"
+      },
+      "du_an_ong_heo_tiet_kiem": { 
+        "name": "Ống Heo Tiết Kiệm", 
+        "materials": { "chai_nuoc": 1, "nap_chai": 1 },
+        "image": "https://i.postimg.cc/kgJtv3qV/1.png"
+      },
+      "du_an_xe_bong_bay": { 
+        "name": "Xe Bóng Bay Phiêu Lưu", 
+        "materials": { "chai_nuoc": 2, "bong_bay": 1, "que_xien": 2 },
+        "image": "https://i.postimg.cc/856FzTBY/2.png"
+      },
+      "du_an_o_to_canh_quat": { 
+        "name": "Ô Tô Cánh Quạt", 
+        "materials": { "chai_nuoc": 2, "nap_chai": 5, "que_xien": 3 },
+        "image": "https://i.postimg.cc/DzW0x7Dz/6.png"
+      },
+      "du_an_quat_canh_tay": { 
+        "name": "Quạt Cánh Tay", 
+        "materials": { "chai_nuoc": 1, "nap_chai": 1, "que_de_luoi": 2 },
+        "image": "https://i.postimg.cc/FK2Rq25V/4.png"
+      },
+      "du_an_thuyen_tu_cheo": { 
+        "name": "Thuyền Tự Chèo", 
+        "materials": { "chai_nuoc": 1, "nap_chai": 2, "que_xien": 3 },
+        "image": "https://i.postimg.cc/C1k1VmwT/5.png"
+      }
+    };
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.textContent = message;
+      toast.style.background = isError ? '#dc2626' : '#059669';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function closeToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.remove('show');
+    }
+
+    function renderItemList() {
+      const itemList = document.getElementById('itemList');
+      if (itemList) {
+        itemList.innerHTML = '';
+        for (const label of Object.keys(totalCounts)) {
+          const displayLabel = labelMap[label] || label;
+          const count = totalCounts[label];
+          itemList.innerHTML += `
+            <li class="flex items-center space-x-4 py-2 fade-in">
+              <span class="w-64 text-gray-700 font-medium"><i class="ri-leaf-line mr-2 text-emerald-600"></i>${displayLabel}</span>
+              <input type="number" value="${count}" min="0" onchange="debouncedUpdateItem('${label}', this.value)" class="w-20" aria-label="Số lượng ${displayLabel}">
+              <button onclick="removeItem('${label}')" class="text-red-500 hover:text-red-600 font-medium transition" aria-label="Xóa ${displayLabel}"><i class="ri-delete-bin-line"></i> Xóa</button>
+            </li>
+          `;
+        }
+        updateAddOptions();
+      }
+    }
+
+    function updateAddOptions() {
+      const select = document.getElementById('addItemSelect');
+      if (select) {
+        select.innerHTML = '<option value="" disabled selected>Chọn vật liệu</option>';
+        modelLabels.forEach(label => {
+          if (!(label in totalCounts)) {
+            const displayLabel = labelMap[label] || label;
+            select.innerHTML += `<option value="${label}">${displayLabel}</option>`;
+          }
+        });
+      }
+    }
+
+    async function processImages(inputId, resetCounts = false) {
+      const input = document.getElementById(inputId);
+      const files = input.files;
+      const resultsDiv = document.getElementById('results');
+      const progressDiv = document.getElementById('progress');
+      const summaryDiv = document.getElementById('summary');
+      const analyzeBtn = input.parentElement.nextElementSibling || input.parentElement.parentElement.nextElementSibling;
+
+      if (!files.length) {
+        showToast('Vui lòng chọn ảnh để phân tích!', true);
+        return;
+      }
+
+      if (resetCounts) {
+        if (resultsDiv) resultsDiv.innerHTML = '';
+        Object.keys(totalCounts).forEach(k => delete totalCounts[k]);
+        document.getElementById('uploadSection').classList.add('hidden');
+      }
+      progressDiv.classList.remove('hidden');
+      analyzeBtn.disabled = true;
+      analyzeBtn.innerHTML = '<span class="spinner"></span> Đang xử lý...';
+
+      try {
+        for (const file of files) {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const response = await fetch("http://127.0.0.1:8000/det", { method: "POST", body: formData });
+          if (!response.ok) throw new Error('Lỗi khi gọi API');
+          const result = await response.json();
+          const imgBase64 = result.data.base64_r;
+          const detections = result.data.result.dict;
+
+          if (resultsDiv && resetCounts) {
+            const card = document.createElement("div");
+            card.className = "fun-card p-4 text-center fade-in";
+            card.innerHTML = `<img src="data:image/jpeg;base64,${imgBase64}" class="w-full h-40 object-cover rounded-lg mb-2"><p class="text-base text-gray-600">Ảnh đã được phân tích!</p>`;
+            resultsDiv.appendChild(card);
+          }
+
+          for (const [label, count] of Object.entries(detections)) {
+            if (modelLabels.includes(label)) {
+              totalCounts[label] = (totalCounts[label] || 0) + count;
+            }
+          }
+        }
+        showToast(resetCounts ? 'Phân tích ảnh thành công!' : 'Bổ sung vật phẩm thành công!');
+      } catch (error) {
+        showToast('Lỗi khi phân tích ảnh. Vui lòng thử lại!', true);
+      }
+
+      progressDiv.classList.add('hidden');
+      if (summaryDiv && resetCounts) summaryDiv.classList.remove('hidden');
+      if (resultsDiv && resetCounts) resultsDiv.classList.add('grid', 'grid-cols-1', 'md:grid-cols-3', 'gap-6');
+      analyzeBtn.disabled = false;
+      analyzeBtn.innerHTML = `<i class="ri-${inputId === 'uploadInput' ? 'image-line' : 'image-add-line'}"></i> ${inputId === 'uploadInput' ? 'Phân Tích' : 'Tải Ảnh'}`;
+      renderItemList();
+    }
+
+    async function analyzeImages() {
+      await processImages('uploadInput', true);
+    }
+
+    async function addMoreImages() {
+      await processImages('addImageInput', false);
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    const debouncedUpdateItem = debounce(updateItem, 300);
+
+    function updateItem(label, value) {
+      totalCounts[label] = parseInt(value) || 0;
+      showToast('Cập nhật số lượng thành công!');
+      renderItemList();
+    }
+
+    function addItem() {
+      const label = document.getElementById('addItemSelect').value;
+      const count = parseInt(document.getElementById('addItemCount').value);
+
+      if (!label || count <= 0) {
+        showToast('Vui lòng chọn vật liệu và số lượng hợp lệ!', true);
+        return;
+      }
+      totalCounts[label] = count;
+      showToast('Thêm vật phẩm thành công!');
+      renderItemList();
+    }
+
+    function removeItem(label) {
+      delete totalCounts[label];
+      showToast('Xóa vật phẩm thành công!');
+      renderItemList();
+    }
+
+    function goBackToUpload() {
+      document.getElementById('summary').classList.add('hidden');
+      document.getElementById('uploadSection').classList.remove('hidden');
+    }
+
+    function submitMaterials() {
+      const projectList = document.getElementById('projectList');
+      if (projectList) {
+        projectList.innerHTML = '';
+
+        for (const [projectId, project] of Object.entries(projects)) {
+          const needed = project.materials;
+          const have = {};
+          const missing = {};
+
+          for (const [material, requiredCount] of Object.entries(needed)) {
+            have[material] = totalCounts[material] || 0;
+            missing[material] = Math.max(0, requiredCount - have[material]);
+          }
+
+          const hasAll = Object.values(missing).every(count => count === 0);
+          const totalItems = Object.values(have).reduce((sum, count) => sum + count, 0);
+          const card = document.createElement("div");
+          card.className = "fun-card p-4 relative fade-in";
+          card.innerHTML = `
+            <span class="badge">${totalItems} vật phẩm</span>
+            <img src="${project.image}" class="project-image" alt="Ảnh minh họa dự án ${project.name}">
+            <h3 class="text-xl font-bold text-gray-900 project-link relative" onclick="window.location.href='instructions.html?projectId=${projectId}'">
+              <i class="ri-lightbulb-line mr-2 text-amber-500"></i>${project.name} ${hasAll ? '<span class="text-emerald-600"><i class="ri-check-line"></i> Có thể thực hiện!</span>' : ''}
+              <span class="tooltip">Nhấn để xem hướng dẫn chi tiết</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div>
+                <p class="font-medium text-gray-700">Cần:</p>
+                <ul class="list-disc pl-5 text-gray-600">${Object.entries(needed).map(([mat, count]) => `<li>${labelMap[mat] || mat}: ${count}</li>`).join('')}</ul>
+              </div>
+              <div>
+                <p class="font-medium text-gray-700">Có:</p>
+                <ul class="list-disc pl-5 text-gray-600">${Object.entries(have).map(([mat, count]) => `<li>${labelMap[mat] || mat}: ${count}</li>`).join('')}</ul>
+              </div>
+              <div>
+                <p class="font-medium text-gray-700">Thiếu:</p>
+                <ul class="list-disc pl-5 text-gray-600">${Object.entries(missing).map(([mat, count]) => `<li>${labelMap[mat] || mat}: ${count}</li>`).join('')}</ul>
+              </div>
+            </div>
+          `;
+          projectList.appendChild(card);
+        }
+
+        document.getElementById('projectResults').classList.remove('hidden');
+        document.getElementById('summary').classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('uploadSection').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

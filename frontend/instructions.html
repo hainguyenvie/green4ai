@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hướng Dẫn - AI 4 Green</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #a3e4db, #d8b5ff);
+      font-family: 'Inter', sans-serif;
+      color: #1a202c;
+      min-height: 100vh;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+    }
+    .instruction-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .instruction-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+      animation: rotate 10s infinite linear;
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .back-btn {
+      background: linear-gradient(45deg, #10b981, #34d399);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      background: linear-gradient(45deg, #059669, #22c55e);
+    }
+    .back-btn:active {
+      transform: translateY(0);
+    }
+    .product-image {
+      display: none; /* Ẩn hình ảnh sản phẩm khỏi phần này */
+    }
+    .diagram {
+      width: 100%;
+      height: 350px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      margin: 1.5rem 0;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .diagram:hover {
+      transform: scale(1.02);
+    }
+    .fullscreen-diagram {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    .fullscreen-diagram.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .fullscreen-diagram img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+    .fullscreen-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #1a202c;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #1a202c;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    ul {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+      text-align: left;
+      color: #4a5568;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      color: #4a5568;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 640px) {
+      .instruction-card {
+        padding: 1.5rem;
+      }
+      h1 {
+        font-size: 1.875rem;
+      }
+      h2 {
+        font-size: 1.25rem;
+      }
+      .diagram {
+        height: 250px;
+      }
+      .back-btn {
+        padding: 0.5rem 1rem;
+      }
+      .fullscreen-diagram img {
+        max-width: 95vw;
+        max-height: 95vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="instruction-card">
+    <button onclick="goBack()" class="back-btn"><i class="ri-arrow-left-line"></i> Quay lại</button>
+    <h1 id="productName" class="text-3xl font-bold mb-4"></h1>
+    <img id="productImage" src="" alt="Hình ảnh sản phẩm" class="product-image" style="display:none;"> <!-- Ẩn hoàn toàn -->
+    <h2 class="text-xl font-semibold mt-4 mb-2">Vật liệu cần thiết:</h2>
+    <ul id="materialsList"></ul>
+    <h2 class="text-xl font-semibold mt-4 mb-2">Các bước thực hiện:</h2>
+    <ul id="stepsList"></ul>
+    <h2 class="text-xl font-semibold mt-4 mb-2">Độ khó:</h2>
+    <p id="difficulty"></p>
+    <h2 class="text-xl font-semibold mt-4 mb-2">Thời gian thực hiện:</h2>
+    <p id="time"></p>
+    <div id="fullscreenDiagram" class="fullscreen-diagram">
+      <button class="fullscreen-close" onclick="closeFullscreenDiagram()"><i class="ri-close-line"></i></button>
+      <img id="fullscreenImage" src="" alt="Sơ đồ quy trình toàn màn hình">
+    </div>
+    <img id="diagram" src="" alt="Sơ đồ quy trình" class="diagram" onclick="openFullscreenDiagram()">
+  </div>
+
+  <script>
+    // Hàm quay lại
+    function goBack() {
+      window.location.href = 'index.html#projectResults'; // Điều hướng đến phần dự án
+    }
+
+    // Hàm mở sơ đồ toàn màn hình
+    function openFullscreenDiagram() {
+      const diagram = document.getElementById('diagram');
+      const fullscreenImage = document.getElementById('fullscreenImage');
+      fullscreenImage.src = diagram.src; // Đảm bảo src được truyền đúng
+      document.getElementById('fullscreenDiagram').classList.add('show');
+    }
+
+    // Hàm đóng sơ đồ toàn màn hình
+    function closeFullscreenDiagram() {
+      document.getElementById('fullscreenDiagram').classList.remove('show');
+    }
+
+    // Lấy tham số projectId từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('projectId');
+
+    // Dữ liệu mẫu cho các dự án (đã cập nhật theo hình ảnh)
+    const projectData = {
+      "du_an_thung_rac": {
+        name: "Thùng Rác",
+        image: "", // Xóa link ảnh khỏi đây
+        materials: ["1 Bìa cát tông"],
+        steps: ["Cắt bìa cát tông thành hình hộp", "Dán các cạnh lại với nhau", "Trang trí tùy ý"],
+        difficulty: "Trung bình",
+        time: "8 phút",
+        diagram: "https://i.postimg.cc/hvnG4TGJ/3.png"
+      },
+      "du_an_ong_heo_tiet_kiem": {
+        name: "Ống Heo Tiết Kiệm",
+        image: "", // Xóa link ảnh khỏi đây
+        materials: ["1 Chai nước", "1 Nắp chai", "1 Giấy màu"],
+        steps: ["Cắt chai nước thành hình ống", "Dán nắp chai làm đế", "Tạo khe rạch để bỏ tiền", "Trang trí bằng giấy màu"],
+        difficulty: "Dễ",
+        time: "10 phút",
+        diagram: "https://i.postimg.cc/5ym2XyHs/1.png"
+      },
+      "du_an_xe_bong_bay": {
+        name: "Xe Bóng Bay",
+        image: "", // Xóa link ảnh khỏi đây
+        materials: ["4 Nắp chai", "1 Chai nước", "2 Ống hút", "1 Quả bóng bay"],
+        steps: ["Lắp nắp chai làm bánh xe", "Gắn ống hút làm trục", "Kết nối bóng bay làm động cơ", "Thử nghiệm"],
+        difficulty: "Trung bình",
+        time: "15 phút",
+        diagram: "https://i.postimg.cc/rm18Hs9q/2.png"
+      },
+      "du_an_o_to_canh_quat": {
+        name: "Ô Tô Cánh Quạt",
+        image: "", // Xóa link ảnh khỏi đây
+        materials: ["5 Nắp chai", "2 Chai nước", "3 Que xiên", "1 Dây chun"],
+        steps: ["Cắt chai nước làm thân", "Gắn nắp chai làm bánh xe", "Lắp que xiên làm cánh quạt", "Dùng dây chun làm động lực"],
+        difficulty: "Khó",
+        time: "20 phút",
+        diagram: "https://i.postimg.cc/D0723hCL/6.png"
+      },
+      "du_an_quat_canh_tay": {
+        name: "Quạt Cánh Tay",
+        image: "", // Xóa link ảnh khỏi đây
+        materials: ["1 Chai nước", "1 Chai đất", "2 Đĩa lọc"],
+        steps: ["Cắt cánh quạt từ chai nước", "Gắn vào chai đất làm trục", "Thử quay tay"],
+        difficulty: "Trung bình",
+        time: "12 phút",
+        diagram: "https://i.postimg.cc/0228t8Kq/4.png"
+      },
+      "du_an_thuyen_tu_cheo": {
+        name: "Thuyền Tự Chèo",
+        image: "", // Xóa link ảnh khỏi đây
+        materials: ["1 Chai nước", "1 Chai đất", "2 Đĩa lọc", "3 Que xiên"],
+        steps: ["Ghép chai nước làm thân thuyền", "Dùng đĩa lọc làm cánh buồm", "Lắp que xiên làm mái chèo", "Kiểm tra nổi trên nước"],
+        difficulty: "Khó",
+        time: "25 phút",
+        diagram: "https://i.postimg.cc/8kbpBF5H/5.png"
+      }
+    };
+
+    // Lấy dữ liệu dự án tương ứng
+    const project = projectData[projectId];
+    if (project) {
+      document.getElementById('productName').textContent = project.name;
+      document.getElementById('productImage').src = ""; // Đảm bảo không hiển thị
+      document.getElementById('materialsList').innerHTML = project.materials.map(mat => `<li>${mat}</li>`).join('');
+      document.getElementById('stepsList').innerHTML = project.steps.map(step => `<li>${step}</li>`).join('');
+      document.getElementById('difficulty').textContent = project.difficulty;
+      document.getElementById('time').textContent = project.time;
+      document.getElementById('diagram').src = project.diagram; // Gán link ảnh vào sơ đồ
+    } else {
+      document.getElementById('productName').textContent = "Dự án không tìm thấy";
+    }
+  </script>
+</body>
+</html>
