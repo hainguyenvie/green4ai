@@ -487,10 +487,9 @@
           const formData = new FormData();
           formData.append("file", file);
 
-          // Construct the backend URL for Replit environment
-          const backendUrl = window.location.hostname.includes('replit.dev') 
-            ? `${window.location.protocol}//${window.location.hostname.replace('-00-', '-8000-00-')}/det`
-            : `${window.location.protocol}//${window.location.hostname}:8000/det`;
+          // For Replit, use the correct port 8000 URL format
+          const baseHostname = window.location.hostname.split('-00-')[0];
+          const backendUrl = `https://${baseHostname}-8000-00-${window.location.hostname.split('-00-')[1]}/det`;
           
           const response = await fetch(backendUrl, { method: "POST", body: formData });
           if (!response.ok) throw new Error('Lỗi khi gọi API');
