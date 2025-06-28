@@ -30,12 +30,12 @@ task = "shell.exec"
 args = "cd frontend && python proxy.py"
 
 [[ports]]
-localPort = 8000
-externalPort = 80
+localPort = 5000
+externalPort = 5000
 
 [[ports]]
 localPort = 8000
-externalPort = 8000
+externalPort = 80
 
 [env]
 REPLIT_DISABLE_PACKAGE_LAYER = "1"
@@ -45,4 +45,4 @@ REPLIT_CLEAR_PACKAGE_CACHE = "1"
 [deployment]
 deploymentTarget = "cloudrun"
 run = ["sh", "-c", "cd backend && uvicorn yolo_fastapi_server:app --host 0.0.0.0 --port 8000"]
-build = ["sh", "-c", "uv sync && cp backend/best.pt backend/ || echo 'Warning: best.pt already in place'"]
+build = ["sh", "-c", "uv sync --reinstall && cp backend/best.pt backend/ || echo 'Warning: best.pt already in place'"]
