@@ -37,6 +37,9 @@ externalPort = 80
 localPort = 8000
 externalPort = 8000
 
+[env]
+REPLIT_DISABLE_PACKAGE_LAYER = "1"
+
 [deployment]
 deploymentTarget = "cloudrun"
 run = ["sh", "-c", "cd backend && uvicorn yolo_fastapi_server:app --host 0.0.0.0 --port 8000"]
