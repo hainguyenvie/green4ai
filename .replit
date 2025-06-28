@@ -40,6 +40,7 @@ externalPort = 8000
 [env]
 REPLIT_DISABLE_PACKAGE_LAYER = "1"
 REPLIT_KEEP_PACKAGE_DEV_DEPENDENCIES = "1"
+REPLIT_CLEAR_PACKAGE_CACHE = "1"
 
 [deployment]
 deploymentTarget = "cloudrun"
