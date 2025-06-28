@@ -18,7 +18,6 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 
 [tool.uv.sources]
-ultralytics = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 vocos = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 vollseg = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 calflops = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
