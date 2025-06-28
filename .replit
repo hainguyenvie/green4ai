@@ -45,4 +45,4 @@ REPLIT_CLEAR_PACKAGE_CACHE = "1"
 [deployment]
 deploymentTarget = "cloudrun"
 run = ["sh", "-c", "cd backend && uvicorn yolo_fastapi_server:app --host 0.0.0.0 --port 8000"]
-build = ["sh", "-c", "uv sync --no-cache && cp backend/best.pt backend/ || echo 'Warning: best.pt already in place'"]
+build = ["sh", "-c", "uv sync --no-cache --no-dev && cp backend/best.pt backend/ || echo 'Warning: best.pt already in place'"]
