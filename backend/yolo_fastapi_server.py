@@ -39,7 +39,7 @@ app.add_middleware(
 
 # Load model
 try:
-    model = YOLO('D:/THT_2025/Green4/backend/best.pt')
+    model = YOLO('best.pt')
 except Exception as e:
     logging.error(f"Could not load model: {e}")
     raise RuntimeError("Model load failed")
@@ -112,4 +112,4 @@ async def detection(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -2,3 +2,32 @@ modules = ["web", "python-3.12"]
 
 [nix]
 channel = "stable-24_05"
+
+[workflows]
+runButton = "Run Full App"
+
+[[workflows.workflow]]
+name = "Start Backend"
+author = 43403000
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && uvicorn yolo_fastapi_server:app --host 0.0.0.0 --port 8000 --reload"
+
+[[workflows.workflow]]
+name = "Run Full App"
+author = 43403000
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && uvicorn yolo_fastapi_server:app --host 0.0.0.0 --port 8000 --reload"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && python -m http.server 5000"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
