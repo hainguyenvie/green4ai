@@ -27,7 +27,7 @@ args = "cd backend && uvicorn yolo_fastapi_server:app --host 0.0.0.0 --port 8000
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd frontend && python -m http.server 5000"
+args = "cd frontend && python proxy.py"
 
 [[ports]]
 localPort = 5000

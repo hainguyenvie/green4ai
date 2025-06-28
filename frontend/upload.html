@@ -487,9 +487,8 @@
           const formData = new FormData();
           formData.append("file", file);
 
-          // For Replit, use the correct port 8000 URL format
-          const baseHostname = window.location.hostname.split('-00-')[0];
-          const backendUrl = `https://${baseHostname}-8000-00-${window.location.hostname.split('-00-')[1]}/det`;
+          // Use relative URL - the proxy will handle forwarding to backend
+          const backendUrl = '/det';
           
           const response = await fetch(backendUrl, { method: "POST", body: formData });
           if (!response.ok) throw new Error('Lỗi khi gọi API');
