@@ -487,7 +487,12 @@
           const formData = new FormData();
           formData.append("file", file);
 
-          const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8000/det`, { method: "POST", body: formData });
+          // Construct the backend URL for Replit environment
+          const backendUrl = window.location.hostname.includes('replit.dev') 
+            ? `${window.location.protocol}//${window.location.hostname.replace('-00-', '-8000-00-')}/det`
+            : `${window.location.protocol}//${window.location.hostname}:8000/det`;
+          
+          const response = await fetch(backendUrl, { method: "POST", body: formData });
           if (!response.ok) throw new Error('Lỗi khi gọi API');
           const result = await response.json();
           const imgBase64 = result.data.base64_r;
