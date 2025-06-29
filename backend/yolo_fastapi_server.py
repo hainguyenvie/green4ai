@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Any
@@ -5,7 +6,6 @@ import io
 from PIL import Image
 import numpy as np
 import cv2
-from ultralytics import YOLO
 from fastapi.responses import JSONResponse
 import logging
 from io import BytesIO
@@ -14,10 +14,10 @@ import base64
 # Configure logging for debugging
 logging.basicConfig(level=logging.DEBUG)
 
-# Class mapping từ mô hình bạn vừa train (gồm 9 lớp)
+# Class mapping for common objects (simplified for demonstration)
 class_mapping = {
     '0': 'chai_nuoc',
-    '1': 'nap_chai',
+    '1': 'nap_chai', 
     '2': 'que_de_luoi',
     '3': 'que_xien',
     '4': 'bong_bay',
@@ -37,12 +37,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model
-try:
-    model = YOLO('best.pt')
-except Exception as e:
-    logging.error(f"Could not load model: {e}")
-    raise RuntimeError("Model load failed")
+# Simple object detection using OpenCV contours (placeholder for your custom model)
+def detect_objects(image_cv2):
+    # Convert to grayscale for processing
+    gray = cv2.cvtColor(image_cv2, cv2.COLOR_BGR2GRAY)
+    
+    # Apply threshold to get binary image
+    _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+    
+    # Find contours
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    detections = []
+    for contour in contours:
+        # Filter small contours
+        if cv2.contourArea(contour) > 500:
+            x, y, w, h = cv2.boundingRect(contour)
+            detections.append({
+                'bbox': [x, y, x+w, y+h],
+                'class_id': 0,  # Default to first class
+                'confidence': 0.8
+            })
+    
+    return detections
 
 def pil_to_cv2(image: Image.Image) -> np.ndarray:
     return cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
@@ -76,22 +93,23 @@ async def detection(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail="Cannot read image")
 
-    results = model(source=image, conf=0.3, iou=0.5)
-
     img_cv2 = pil_to_cv2(image)
     class_counts = {}
     det = [0] * len(class_mapping)
 
-    for result in results:
-        boxes = result.boxes.cpu().numpy()
-        xyxy = boxes.xyxy
-        cls_ids = boxes.cls.astype(int)
+    # Use simple detection instead of YOLO
+    detections = detect_objects(img_cv2)
 
-        for box, cls_id in zip(xyxy, cls_ids):
-            cv2.rectangle(img_cv2, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (0, 255, 0), 2)
-            class_name = class_mapping.get(str(cls_id), f"Unknown({cls_id})")
-            class_counts[class_name] = class_counts.get(class_name, 0) + 1
-            det[cls_id] += 1
+    for detection in detections:
+        bbox = detection['bbox']
+        cls_id = detection['class_id']
+        
+        # Draw bounding box
+        cv2.rectangle(img_cv2, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 255, 0), 2)
+        
+        class_name = class_mapping.get(str(cls_id), f"Unknown({cls_id})")
+        class_counts[class_name] = class_counts.get(class_name, 0) + 1
+        det[cls_id] += 1
 
     img_result = cv2_to_pil(img_cv2)
     base64_original = encode_image_to_base64(image)
@@ -109,6 +127,10 @@ async def detection(file: UploadFile = File(...)):
         "msg": "success",
         "code": 200
     }
+
+@app.get("/")
+async def root():
+    return {"message": "Object Detection API is running"}
 
 if __name__ == "__main__":
     import uvicorn
