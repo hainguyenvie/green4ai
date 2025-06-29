@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 
 class ProxyHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory='frontend', **kwargs)
+        super().__init__(*args, directory='.', **kwargs)
     
     def do_GET(self):
         # Serve index.html for root path
