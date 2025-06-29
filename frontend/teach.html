@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài Giảng - AI 4 Green</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #a3e4db, #d8b5ff);
+      font-family: 'Inter', sans-serif;
+      color: #1a202c;
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: auto;
+    }
+
+    .lesson-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 1.5rem;
+      max-width: 300px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .lesson-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #1a202c;
+    }
+
+    .view-lesson-btn {
+      background: linear-gradient(45deg, #10b981, #34d399);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .view-lesson-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #1a202c;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+      color: #4a5568;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th,
+    td {
+      border: 1px solid #e2e8f0;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background: #f7fafc;
+      font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+
+      .lesson-card {
+        max-width: 100%;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mx-auto">
+    <h1 class="text-center text-3xl font-bold mb-8">Danh Sách Bài Học STEAM</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="lessonsList"></div>
+    <div id="lessonModal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()"><i class="ri-close-line"></i></button>
+        <h1 id="lessonTitle" class="text-2xl font-bold"></h1>
+        <div id="lessonPlan"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dữ liệu bài học
+    const lessonsData = {
+      "du_an_thung_rac": {
+        name: "Thùng Rác",
+        description: "Học sinh tái chế bìa cát tông để tạo thùng rác, tìm hiểu về tái chế và bảo vệ môi trường.",
+        lessonPlan: `
+          <h2>KHUNG KẾ HOẠCH BÀI DẠY</h2>
+          <p><strong>Môn học/Yếu tố tích hợp</strong>: Khoa học - Môi trường; <strong>Lớp</strong>: 6-12 tuổi</p>
+          <p><strong>Tên bài học</strong>: Tái Chế Tạo Thùng Rác; <strong>Số tiết</strong>: 1</p>
+          <p><strong>Thời gian thực hiện</strong>: 01/10/2023</p>
+          <p><strong>Mục tiêu SDG</strong>: 12 - Tiêu dùng và sản xuất bền vững</p>
+
+          <h2>I. Mục tiêu</h2>
+          <h3>1. Về kiến thức</h3>
+          <ul>
+            <li>Hiểu vai trò của tái chế trong bảo vệ môi trường.</li>
+            <li>Nhận biết các vật liệu có thể tái sử dụng.</li>
+          </ul>
+          <h3>2. Về năng lực</h3>
+          <ul>
+            <li>Thực hiện cắt, dán bìa cát tông để tạo thùng rác.</li>
+            <li>Phát triển kỹ năng làm việc nhóm.</li>
+          </ul>
+          <h3>3. Về phẩm chất</h3>
+          <ul>
+            <li>Rèn ý thức bảo vệ môi trường.</li>
+            <li>Khơi dậy sự sáng tạo qua trang trí.</li>
+          </ul>
+
+          <h2>II. Thiết bị dạy học và học liệu</h2>
+          <table>
+            <tr><th>Tên nguyên liệu</th><th>Số lượng</th><th>Kích thước</th><th>Mục đích sử dụng</th><th>Link mua</th><th>Giá tham khảo</th></tr>
+            <tr><td>Bìa cát tông</td><td>10 tấm</td><td>50x50 cm</td><td>Tạo thân thùng rác</td><td><a href="https://shopee.vn/Bìa-cát-tông">Shopee</a></td><td>20.000 VNĐ</td></tr>
+            <tr><td>Keo dán</td><td>5 lọ</td><td>100ml</td><td>Dán các cạnh</td><td><a href="https://shopee.vn/Keo-dán">Shopee</a></td><td>10.000 VNĐ</td></tr>
+            <tr><td>Màu vẽ</td><td>5 bộ</td><td>-</td><td>Trang trí</td><td><a href="https://shopee.vn/Màu-vẽ">Shopee</a></td><td>30.000 VNĐ</td></tr>
+          </table>
+          <h3>Hướng dẫn thực hiện</h3>
+          <ol>
+            <li>Rửa tay và chuẩn bị không gian sạch sẽ.</li>
+            <li>Cắt bìa cát tông thành hình hộp (4 mặt và đáy).</li>
+            <li>Dán các cạnh bằng keo, đảm bảo chắc chắn.</li>
+            <li>Trang trí thùng rác bằng màu vẽ hoặc giấy màu.</li>
+            <li>Kiểm tra độ bền và sử dụng thử.</li>
+          </ol>
+
+          <h2>III. Tiến trình dạy học</h2>
+          <h3>1. Hoạt động 1: Khởi động (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Khơi gợi ý thức bảo vệ môi trường.</p>
+          <p><strong>Nội dung</strong>: Xem video về tái chế, thảo luận: "Tại sao cần tái chế?"</p>
+          <p><strong>Sản phẩm</strong>: Câu hỏi của học sinh về tái chế.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên điều hành, học sinh thảo luận nhóm.</p>
+
+          <h3>2. Hoạt động 2: Khám phá (20 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thực hiện tạo thùng rác.</p>
+          <p><strong>Nội dung</strong>: Hướng dẫn cắt, dán bìa cát tông.</p>
+          <p><strong>Sản phẩm</strong>: Thùng rác hoàn chỉnh.</p>
+          <p><strong>Tổ chức</strong>: Chia nhóm, thực hiện theo hướng dẫn.</p>
+
+          <h3>3. Hoạt động 3: Luyện tập (15 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Đánh giá sản phẩm và thảo luận.</p>
+          <p><strong>Nội dung</strong>: Nhóm trình bày thùng rác và cách sử dụng.</p>
+          <p><strong>Sản phẩm</strong>: Báo cáo ngắn về sản phẩm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên hướng dẫn, học sinh thuyết trình.</p>
+
+          <h3>4. Hoạt động 4: Vận dụng (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Liên hệ tái chế với đời sống.</p>
+          <p><strong>Nội dung</strong>: Thảo luận cách sử dụng thùng rác trong trường học.</p>
+          <p><strong>Sản phẩm</strong>: Ý tưởng sử dụng thùng rác.</p>
+          <p><strong>Tổ chức</strong>: Học sinh làm việc nhóm, trình bày.</p>
+
+          <h2>IV. Học liệu mở rộng</h2>
+          <ul>
+            <li><a href="https://www.greenpeace.org/vietnam">Greenpeace Việt Nam</a></li>
+            <li><a href="https://www.youtube.com/watch?v=reuse">Video về tái chế</a></li>
+          </ul>
+        `
+      },
+      "du_an_ong_heo_tiet_kiem": {
+        name: "Ống Heo Tiết Kiệm",
+        description: "Học sinh tái chế chai nhựa để làm ống heo, học về tiết kiệm và sáng tạo.",
+        lessonPlan: `
+          <h2>KHUNG KẾ HOẠCH BÀI DẠY</h2>
+          <p><strong>Môn học/Yếu tố tích hợp</strong>: Nghệ thuật - Kinh tế; <strong>Lớp</strong>: 6-12 tuổi</p>
+          <p><strong>Tên bài học</strong>: Tạo Ống Heo Tiết Kiệm; <strong>Số tiết</strong>: 1</p>
+          <p><strong>Thời gian thực hiện</strong>: 01/10/2023</p>
+          <p><strong>Mục tiêu SDG</strong>: 12 - Tiêu dùng và sản xuất bền vững</p>
+
+          <h2>I. Mục tiêu</h2>
+          <h3>1. Về kiến thức</h3>
+          <ul>
+            <li>Hiểu giá trị của tiết kiệm và tái chế.</li>
+            <li>Nhận biết cách sử dụng vật liệu tái chế trong sáng tạo.</li>
+          </ul>
+          <h3>2. Về năng lực</h3>
+          <ul>
+            <li>Thực hiện cắt, dán chai nhựa để tạo ống heo.</li>
+            <li>Phát triển kỹ năng sáng tạo qua trang trí.</li>
+          </ul>
+          <h3>3. Về phẩm chất</h3>
+          <ul>
+            <li>Rèn ý thức tiết kiệm.</li>
+            <li>Khơi dậy sự sáng tạo và trách nhiệm.</li>
+          </ul>
+
+          <h2>II. Thiết bị dạy học và học liệu</h2>
+          <table>
+            <tr><th>Tên nguyên liệu</th><th>Số lượng</th><th>Kích thước</th><th>Mục đích sử dụng</th><th>Link mua</th><th>Giá tham khảo</th></tr>
+            <tr><td>Chai nhựa</td><td>10 chai</td><td>500ml</td><td>Tạo thân ống heo</td><td><a href="https://shopee.vn/Chai-nhựa">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Giấy màu</td><td>5 bộ</td><td>A4</td><td>Trang trí</td><td><a href="https://shopee.vn/Giấy-màu">Shopee</a></td><td>15.000 VNĐ</td></tr>
+            <tr><td>Keo dán</td><td>5 lọ</td><td>100ml</td><td>Dán các bộ phận</td><td><a href="https://shopee.vn/Keo-dán">Shopee</a></td><td>10.000 VNĐ</td></tr>
+          </table>
+          <h3>Hướng dẫn thực hiện</h3>
+          <ol>
+            <li>Rửa sạch chai nhựa và lau khô.</li>
+            <li>Cắt chai nhựa thành hình ống heo (giữ nắp chai làm đầu).</li>
+            <li>Tạo khe rạch trên thân chai để bỏ tiền.</li>
+            <li>Trang trí bằng giấy màu và keo dán.</li>
+            <li>Kiểm tra độ bền và sử dụng thử.</li>
+          </ol>
+
+          <h2>III. Tiến trình dạy học</h2>
+          <h3>1. Hoạt động 1: Khởi động (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Khơi gợi ý thức tiết kiệm.</p>
+          <p><strong>Nội dung</strong>: Thảo luận: "Tại sao cần tiết kiệm tiền?"</p>
+          <p><strong>Sản phẩm</strong>: Câu hỏi của học sinh về tiết kiệm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên điều hành, học sinh thảo luận nhóm.</p>
+
+          <h3>2. Hoạt động 2: Khám phá (20 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thực hiện tạo ống heo.</p>
+          <p><strong>Nội dung</strong>: Hướng dẫn cắt, dán chai nhựa.</p>
+          <p><strong>Sản phẩm</strong>: Ống heo hoàn chỉnh.</p>
+          <p><strong>Tổ chức</strong>: Chia nhóm, thực hiện theo hướng dẫn.</p>
+
+          <h3>3. Hoạt động 3: Luyện tập (15 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Đánh giá sản phẩm và thảo luận.</p>
+          <p><strong>Nội dung</strong>: Nhóm trình bày ống heo và ý tưởng trang trí.</p>
+          <p><strong>Sản phẩm</strong>: Báo cáo ngắn về sản phẩm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên hướng dẫn, học sinh thuyết trình.</p>
+
+          <h3>4. Hoạt động 4: Vận dụng (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Liên hệ tiết kiệm với đời sống.</p>
+          <p><strong>Nội dung</strong>: Thảo luận cách sử dụng ống heo để tiết kiệm.</p>
+          <p><strong>Sản phẩm</strong>: Ý tưởng tiết kiệm tiền.</p>
+          <p><strong>Tổ chức</strong>: Học sinh làm việc nhóm, trình bày.</p>
+
+          <h2>IV. Học liệu mở rộng</h2>
+          <ul>
+            <li><a href="https://www.financialeducation.org">Giáo dục tài chính</a></li>
+            <li><a href="https://www.youtube.com/watch?v=saving">Video về tiết kiệm</a></li>
+          </ul>
+        `
+      },
+      "du_an_xe_bong_bay": {
+        name: "Xe Bóng Bay",
+        description: "Học sinh tạo xe chạy bằng lực đẩy bóng bay, tìm hiểu về chuyển động và năng lượng.",
+        lessonPlan: `
+          <h2>KHUNG KẾ HOẠCH BÀI DẠY</h2>
+          <p><strong>Môn học/Yếu tố tích hợp</strong>: Khoa học - Vật lý; <strong>Lớp</strong>: 6-12 tuổi</p>
+          <p><strong>Tên bài học</strong>: Xe Bóng Bay; <strong>Số tiết</strong>: 1</p>
+          <p><strong>Thời gian thực hiện</strong>: 01/10/2023</p>
+          <p><strong>Mục tiêu SDG</strong>: 7 - Năng lượng sạch và giá rẻ</p>
+
+          <h2>I. Mục tiêu</h2>
+          <h3>1. Về kiến thức</h3>
+          <ul>
+            <li>Hiểu nguyên lý chuyển động nhờ lực đẩy không khí.</li>
+            <li>Nhận biết cách sử dụng vật liệu tái chế trong kỹ thuật.</li>
+          </ul>
+          <h3>2. Về năng lực</h3>
+          <ul>
+            <li>Thực hiện lắp ráp xe bóng bay.</li>
+            <li>Phát triển kỹ năng quan sát và thử nghiệm.</li>
+          </ul>
+          <h3>3. Về phẩm chất</h3>
+          <ul>
+            <li>Rèn tính kiên nhẫn và sáng tạo.</li>
+            <li>Khơi dậy hứng thú với vật lý.</li>
+          </ul>
+
+          <h2>II. Thiết bị dạy học và học liệu</h2>
+          <table>
+            <tr><th>Tên nguyên liệu</th><th>Số lượng</th><th>Kích thước</th><th>Mục đích sử dụng</th><th>Link mua</th><th>Giá tham khảo</th></tr>
+            <tr><td>Nắp chai</td><td>40 cái</td><td>3cm</td><td>Làm bánh xe</td><td><a href="https://shopee.vn/Nắp-chai">Shopee</a></td><td>10.000 VNĐ</td></tr>
+            <tr><td>Chai nhựa</td><td>10 chai</td><td>500ml</td><td>Thân xe</td><td><a href="https://shopee.vn/Chai-nhựa">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Ống hút</td><td>20 cái</td><td>20cm</td><td>Trục xe</td><td><a href="https://shopee.vn/Ống-hút">Shopee</a></td><td>10.000 VNĐ</td></tr>
+            <tr><td>Bóng bay</td><td>10 quả</td><td>-</td><td>Động cơ</td><td><a href="https://shopee.vn/Bóng-bay">Shopee</a></td><td>15.000 VNĐ</td></tr>
+          </table>
+          <h3>Hướng dẫn thực hiện</h3>
+          <ol>
+            <li>Rửa sạch chai nhựa và nắp chai.</li>
+            <li>Cắt chai nhựa làm thân xe.</li>
+            <li>Gắn nắp chai làm bánh xe, dùng ống hút làm trục.</li>
+            <li>Gắn bóng bay vào đầu chai làm động cơ.</li>
+            <li>Thổi bóng bay và thử nghiệm xe di chuyển.</li>
+          </ol>
+
+          <h2>III. Tiến trình dạy học</h2>
+          <h3>1. Hoạt động 1: Khởi động (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Hiểu nguyên lý lực đẩy.</p>
+          <p><strong>Nội dung</strong>: Xem video về chuyển động, thảo luận: "Điều gì khiến xe di chuyển?"</p>
+          <p><strong>Sản phẩm</strong>: Câu hỏi của học sinh về lực đẩy.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên điều hành, học sinh thảo luận nhóm.</p>
+
+          <h3>2. Hoạt động 2: Khám phá (20 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thực hiện lắp ráp xe bóng bay.</p>
+          <p><strong>Nội dung</strong>: Hướng dẫn lắp ráp các bộ phận.</p>
+          <p><strong>Sản phẩm</strong>: Xe bóng bay hoàn chỉnh.</p>
+          <p><strong>Tổ chức</strong>: Chia nhóm, thực hiện theo hướng dẫn.</p>
+
+          <h3>3. Hoạt động 3: Luyện tập (15 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thử nghiệm và đánh giá xe.</p>
+          <p><strong>Nội dung</strong>: Nhóm thử xe và ghi lại khoảng cách di chuyển.</p>
+          <p><strong>Sản phẩm</strong>: Bảng kết quả thử nghiệm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên hướng dẫn, học sinh thuyết trình.</p>
+
+          <h3>4. Hoạt động 4: Vận dụng (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Liên hệ lực đẩy với đời sống.</p>
+          <p><strong>Nội dung</strong>: Thảo luận ứng dụng lực đẩy (tên lửa, xe hơi).</p>
+          <p><strong>Sản phẩm</strong>: Ý tưởng ứng dụng lực đẩy.</p>
+          <p><strong>Tổ chức</strong>: Học sinh làm việc nhóm, trình bày.</p>
+
+          <h2>IV. Học liệu mở rộng</h2>
+          <ul>
+            <li><a href="https://www.khanacademy.org/science/physics">Khan Academy - Vật lý</a></li>
+            <li><a href="https://www.youtube.com/watch?v=motion">Video về chuyển động</a></li>
+          </ul>
+        `
+      },
+      "du_an_o_to_canh_quat": {
+        name: "Ô Tô Cánh Quạt",
+        description: "Học sinh tạo ô tô chạy bằng dây chun và cánh quạt, tìm hiểu về năng lượng đàn hồi.",
+        lessonPlan: `
+          <h2>KHUNG KẾ HOẠCH BÀI DẠY</h2>
+          <p><strong>Môn học/Yếu tố tích hợp</strong>: Khoa học - Vật lý; <strong>Lớp</strong>: 6-12 tuổi</p>
+          <p><strong>Tên bài học</strong>: Ô Tô Cánh Quạt; <strong>Số tiết</strong>: 1</p>
+          <p><strong>Thời gian thực hiện</strong>: 01/10/2023</p>
+          <p><strong>Mục tiêu SDG</strong>: 7 - Năng lượng sạch và giá rẻ</p>
+
+          <h2>I. Mục tiêu</h2>
+          <h3>1. Về kiến thức</h3>
+          <ul>
+            <li>Hiểu nguyên lý năng lượng đàn hồi và chuyển động.</li>
+            <li>Nhận biết cách sử dụng vật liệu tái chế trong kỹ thuật.</li>
+          </ul>
+          <h3>2. Về năng lực</h3>
+          <ul>
+            <li>Thực hiện lắp ráp ô tô cánh quạt.</li>
+            <li>Phát triển kỹ năng thử nghiệm và tối ưu hóa.</li>
+          </ul>
+          <h3>3. Về phẩm chất</h3>
+          <ul>
+            <li>Rèn tính kiên nhẫn và tư duy kỹ thuật.</li>
+            <li>Khơi dậy hứng thú với năng lượng tái tạo.</li>
+          </ul>
+
+          <h2>II. Thiết bị dạy học và học liệu</h2>
+          <table>
+            <tr><th>Tên nguyên liệu</th><th>Số lượng</th><th>Kích thước</th><th>Mục đích sử dụng</th><th>Link mua</th><th>Giá tham khảo</th></tr>
+            <tr><td>Nắp chai</td><td>50 cái</td><td>3cm</td><td>Làm bánh xe</td><td><a href="https://shopee.vn/Nắp-chai">Shopee</a></td><td>10.000 VNĐ</td></tr>
+            <tr><td>Chai nhựa</td><td>20 chai</td><td>500ml</td><td>Thân xe</td><td><a href="https://shopee.vn/Chai-nhựa">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Que xiên</td><td>30 cái</td><td>20cm</td><td>Cánh quạt</td><td><a href="https://shopee.vn/Que-xiên">Shopee</a></td><td>10.000 VNĐ</td></tr>
+            <tr><td>Dây chun</td><td>10 cái</td><td>-</td><td>Động lực</td><td><a href="https://shopee.vn/Dây-chun">Shopee</a></td><td>5.000 VNĐ</td></tr>
+          </table>
+          <h3>Hướng dẫn thực hiện</h3>
+          <ol>
+            <li>Rửa sạch chai nhựa và nắp chai.</li>
+            <li>Cắt chai nhựa làm thân xe.</li>
+            <li>Gắn nắp chai làm bánh xe, que xiên làm cánh quạt.</li>
+            <li>Dùng dây chun làm động lực quay cánh quạt.</li>
+            <li>Thử nghiệm xe di chuyển.</li>
+          </ol>
+
+          <h2>III. Tiến trình dạy học</h2>
+          <h3>1. Hoạt động 1: Khởi động (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Hiểu năng lượng đàn hồi.</p>
+          <p><strong>Nội dung</strong>: Xem video về năng lượng, thảo luận: "Dây chun hoạt động thế nào?"</p>
+          <p><strong>Sản phẩm</strong>: Câu hỏi của học sinh về năng lượng.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên điều hành, học sinh thảo luận nhóm.</p>
+
+          <h3>2. Hoạt động 2: Khám phá (20 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thực hiện lắp ráp ô tô cánh quạt.</p>
+          <p><strong>Nội dung</strong>: Hướng dẫn lắp ráp các bộ phận.</p>
+          <p><strong>Sản phẩm</strong>: Ô tô cánh quạt hoàn chỉnh.</p>
+          <p><strong>Tổ chức</strong>: Chia nhóm, thực hiện theo hướng dẫn.</p>
+
+          <h3>3. Hoạt động 3: Luyện tập (15 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thử nghiệm và tối ưu hóa xe.</p>
+          <p><strong>Nội dung</strong>: Nhóm thử xe và điều chỉnh cánh quạt.</p>
+          <p><strong>Sản phẩm</strong>: Bảng kết quả thử nghiệm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên hướng dẫn, học sinh thuyết trình.</p>
+
+          <h3>4. Hoạt động 4: Vận dụng (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Liên hệ năng lượng với đời sống.</p>
+          <p><strong>Nội dung</strong>: Thảo luận ứng dụng năng lượng đàn hồi (đồng hồ, đồ chơi).</p>
+          <p><strong>Sản phẩm</strong>: Ý tưởng ứng dụng năng lượng.</p>
+          <p><strong>Tổ chức</strong>: Học sinh làm việc nhóm, trình bày.</p>
+
+          <h2>IV. Học liệu mở rộng</h2>
+          <ul>
+            <li><a href="https://www.khanacademy.org/science/physics">Khan Academy - Vật lý</a></li>
+            <li><a href="https://www.youtube.com/watch?v=energy">Video về năng lượng</a></li>
+          </ul>
+        `
+      },
+      "du_an_quat_canh_tay": {
+        name: "Quạt Cánh Tay",
+        description: "Học sinh tạo quạt quay bằng tay, tìm hiểu về cơ học và chuyển động quay.",
+        lessonPlan: `
+          <h2>KHUNG KẾ HOẠCH BÀI DẠY</h2>
+          <p><strong>Môn học/Yếu tố tích hợp</strong>: Khoa học - Vật lý; <strong>Lớp</strong>: 6-12 tuổi</p>
+          <p><strong>Tên bài học</strong>: Quạt Cánh Tay; <strong>Số tiết</strong>: 1</p>
+          <p><strong>Thời gian thực hiện</strong>: 01/10/2023</p>
+          <p><strong>Mục tiêu SDG</strong>: 7 - Năng lượng sạch và giá rẻ</p>
+
+          <h2>I. Mục tiêu</h2>
+          <h3>1. Về kiến thức</h3>
+          <ul>
+            <li>Hiểu nguyên lý chuyển động quay.</li>
+            <li>Nhận biết cách sử dụng vật liệu tái chế trong cơ học.</li>
+          </ul>
+          <h3>2. Về năng lực</h3>
+          <ul>
+            <li>Thực hiện lắp ráp quạt cánh tay.</li>
+            <li>Phát triển kỹ năng quan sát và thử nghiệm.</li>
+          </ul>
+          <h3>3. Về phẩm chất</h3>
+          <ul>
+            <li>Rèn tính kiên nhẫn và sáng tạo.</li>
+            <li>Khơi dậy hứng thú với cơ học.</li>
+          </ul>
+
+          <h2>II. Thiết bị dạy học và học liệu</h2>
+          <table>
+            <tr><th>Tên nguyên liệu</th><th>Số lượng</th><th>Kích thước</th><th>Mục đích sử dụng</th><th>Link mua</th><th>Giá tham khảo</th></tr>
+            <tr><td>Chai nhựa</td><td>10 chai</td><td>500ml</td><td>Tạo cánh quạt</td><td><a href="https://shopee.vn/Chai-nhựa">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Chai đất</td><td>10 chai</td><td>200ml</td><td>Làm trục</td><td><a href="https://shopee.vn/Chai-đất">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Đĩa lọc</td><td>20 cái</td><td>10cm</td><td>Tăng độ bền</td><td><a href="https://shopee.vn/Đĩa-lọc">Shopee</a></td><td>10.000 VNĐ</td></tr>
+          </table>
+          <h3>Hướng dẫn thực hiện</h3>
+          <ol>
+            <li>Rửa sạch chai nhựa và chai đất.</li>
+            <li>Cắt chai nhựa thành cánh quạt.</li>
+            <li>Gắn cánh quạt vào chai đất làm trục.</li>
+            <li>Thử quay quạt bằng tay.</li>
+            <li>Kiểm tra độ cân bằng và điều chỉnh.</li>
+          </ol>
+
+          <h2>III. Tiến trình dạy học</h2>
+          <h3>1. Hoạt động 1: Khởi động (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Hiểu chuyển động quay.</p>
+          <p><strong>Nội dung</strong>: Xem video về quạt, thảo luận: "Quạt quay thế nào?"</p>
+          <p><strong>Sản phẩm</strong>: Câu hỏi của học sinh về chuyển động.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên điều hành, học sinh thảo luận nhóm.</p>
+
+          <h3>2. Hoạt động 2: Khám phá (20 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thực hiện lắp ráp quạt cánh tay.</p>
+          <p><strong>Nội dung</strong>: Hướng dẫn lắp ráp các bộ phận.</p>
+          <p><strong>Sản phẩm</strong>: Quạt cánh tay hoàn chỉnh.</p>
+          <p><strong>Tổ chức</strong>: Chia nhóm, thực hiện theo hướng dẫn.</p>
+
+          <h3>3. Hoạt động 3: Luyện tập (15 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thử nghiệm và tối ưu hóa quạt.</p>
+          <p><strong>Nội dung</strong>: Nhóm thử quạt và điều chỉnh tốc độ quay.</p>
+          <p><strong>Sản phẩm</strong>: Bảng kết quả thử nghiệm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên hướng dẫn, học sinh thuyết trình.</p>
+
+          <h3>4. Hoạt động 4: Vận dụng (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Liên hệ chuyển động quay với đời sống.</p>
+          <p><strong>Nội dung</strong>: Thảo luận ứng dụng chuyển động quay (quạt điện, tua-bin).</p>
+          <p><strong>Sản phẩm</strong>: Ý tưởng ứng dụng chuyển động.</p>
+          <p><strong>Tổ chức</strong>: Học sinh làm việc nhóm, trình bày.</p>
+
+          <h2>IV. Học liệu mở rộng</h2>
+          <ul>
+            <li><a href="https://www.khanacademy.org/science/physics">Khan Academy - Vật lý</a></li>
+            <li><a href="https://www.youtube.com/watch?v=rotation">Video về chuyển động quay</a></li>
+          </ul>
+        `
+      },
+      "du_an_thuyen_tu_cheo": {
+        name: "Thuyền Tự Chèo",
+        description: "Học sinh tạo thuyền từ vật liệu tái chế, tìm hiểu về lực đẩy và nổi trên nước.",
+        lessonPlan: `
+          <h2>KHUNG KẾ HOẠCH BÀI DẠY</h2>
+          <p><strong>Môn học/Yếu tố tích hợp</strong>: Khoa học - Vật lý; <strong>Lớp</strong>: 6-12 tuổi</p>
+          <p><strong>Tên bài học</strong>: Thuyền Tự Chèo; <strong>Số tiết</strong>: 1</p>
+          <p><strong>Thời gian thực hiện</strong>: 01/10/2023</p>
+          <p><strong>Mục tiêu SDG</strong>: 14 - Sự sống dưới nước</p>
+
+          <h2>I. Mục tiêu</h2>
+          <h3>1. Về kiến thức</h3>
+          <ul>
+            <li>Hiểu nguyên lý lực đẩy và nổi trên nước.</li>
+            <li>Nhận biết cách sử dụng vật liệu tái chế trong kỹ thuật.</li>
+          </ul>
+          <h3>2. Về năng lực</h3>
+          <ul>
+            <li>Thực hiện lắp ráp thuyền tự chèo.</li>
+            <li>Phát triển kỹ năng thử nghiệm và quan sát.</li>
+          </ul>
+          <h3>3. Về phẩm chất</h3>
+          <ul>
+            <li>Rèn tính kiên nhẫn và sáng tạo.</li>
+            <li>Khơi dậy hứng thú với vật lý và môi trường nước.</li>
+          </ul>
+
+          <h2>II. Thiết bị dạy học và học liệu</h2>
+          <table>
+            <tr><th>Tên nguyên liệu</th><th>Số lượng</th><th>Kích thước</th><th>Mục đích sử dụng</th><th>Link mua</th><th>Giá tham khảo</th></tr>
+            <tr><td>Chai nhựa</td><td>10 chai</td><td>500ml</td><td>Thân thuyền</td><td><a href="https://shopee.vn/Chai-nhựa">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Chai đất</td><td>10 chai</td><td>200ml</td><td>Tăng độ bền</td><td><a href="https://shopee.vn/Chai-đất">Shopee</a></td><td>5.000 VNĐ</td></tr>
+            <tr><td>Đĩa lọc</td><td>20 cái</td><td>10cm</td><td>Cánh buồm</td><td><a href="https://shopee.vn/Đĩa-lọc">Shopee</a></td><td>10.000 VNĐ</td></tr>
+            <tr><td>Que xiên</td><td>30 cái</td><td>20cm</td><td>Mái chèo</td><td><a href="https://shopee.vn/Que-xiên">Shopee</a></td><td>10.000 VNĐ</td></tr>
+          </table>
+          <h3>Hướng dẫn thực hiện</h3>
+          <ol>
+            <li>Rửa sạch chai nhựa và chai đất.</li>
+            <li>Ghép chai nhựa làm thân thuyền.</li>
+            <li>Gắn đĩa lọc làm cánh buồm, que xiên làm mái chèo.</li>
+            <li>Thử thuyền trên nước và điều chỉnh.</li>
+            <li>Kiểm tra khả năng nổi và chuyển động.</li>
+          </ol>
+
+          <h2>III. Tiến trình dạy học</h2>
+          <h3>1. Hoạt động 1: Khởi động (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Hiểu nguyên lý nổi và lực đẩy.</p>
+          <p><strong>Nội dung</strong>: Xem video về thuyền, thảo luận: "Thuyền di chuyển thế nào?"</p>
+          <p><strong>Sản phẩm</strong>: Câu hỏi của học sinh về lực đẩy.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên điều hành, học sinh thảo luận nhóm.</p>
+
+          <h3>2. Hoạt động 2: Khám phá (20 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thực hiện lắp ráp thuyền tự chèo.</p>
+          <p><strong>Nội dung</strong>: Hướng dẫn lắp ráp các bộ phận.</p>
+          <p><strong>Sản phẩm</strong>: Thuyền tự chèo hoàn chỉnh.</p>
+          <p><strong>Tổ chức</strong>: Chia nhóm, thực hiện theo hướng dẫn.</p>
+
+          <h3>3. Hoạt động 3: Luyện tập (15 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Thử nghiệm và tối ưu hóa thuyền.</p>
+          <p><strong>Nội dung</strong>: Nhóm thử thuyền trên nước và điều chỉnh.</p>
+          <p><strong>Sản phẩm</strong>: Bảng kết quả thử nghiệm.</p>
+          <p><strong>Tổ chức</strong>: Giáo viên hướng dẫn, học sinh thuyết trình.</p>
+
+          <h3>4. Hoạt động 4: Vận dụng (10 phút)</h3>
+          <p><strong>Mục tiêu</strong>: Liên hệ lực đẩy với đời sống.</p>
+          <p><strong>Nội dung</strong>: Thảo luận ứng dụng lực đẩy (thuyền, tàu thủy).</p>
+          <p><strong>Sản phẩm</strong>: Ý tưởng ứng dụng lực đẩy.</p>
+          <p><strong>Tổ chức</strong>: Học sinh làm việc nhóm, trình bày.</p>
+
+          <h2>IV. Học liệu mở rộng</h2>
+          <ul>
+            <li><a href="https://www.khanacademy.org/science/physics">Khan Academy - Vật lý</a></li>
+            <li><a href="https://www.youtube.com/watch?v=boat">Video về thuyền</a></li>
+          </ul>
+        `
+      }
+    };
+
+    // Hiển thị danh sách bài học
+    const lessonsList = document.getElementById('lessonsList');
+    Object.keys(lessonsData).forEach(key => {
+      const lesson = lessonsData[key];
+      const card = document.createElement('div');
+      card.className = 'lesson-card';
+      card.innerHTML = `
+        <h2 class="text-xl font-semibold">${lesson.name}</h2>
+        <p class="text-gray-600 mb-4">${lesson.description}</p>
+        <button class="view-lesson-btn" onclick="openModal('${key}')">
+          <i class="ri-book-open-line"></i> Xem giáo án
+        </button>
+      `;
+      lessonsList.appendChild(card);
+    });
+
+    // Hàm mở modal giáo án
+    function openModal(lessonId) {
+      const lesson = lessonsData[lessonId];
+      if (lesson) {
+        document.getElementById('lessonTitle').textContent = lesson.name;
+        document.getElementById('lessonPlan').innerHTML = lesson.lessonPlan;
+        document.getElementById('lessonModal').style.display = 'flex';
+      }
+    }
+
+    // Hàm đóng modal
+    function closeModal() {
+      document.getElementById('lessonModal').style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>

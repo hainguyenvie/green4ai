@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             position: relative;
             overflow-x: hidden;
         }
+
         body::before {
             content: '';
             position: absolute;
@@ -26,6 +28,7 @@
             left: 5%;
             animation: float 4s infinite ease-in-out;
         }
+
         body::after {
             content: '★';
             position: absolute;
@@ -35,14 +38,31 @@
             right: 10%;
             animation: twinkle 3s infinite;
         }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
+
         @keyframes twinkle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
         }
+
         .hero-bg {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
@@ -51,6 +71,7 @@
             position: relative;
             animation: bounce 1.5s infinite ease-in-out;
         }
+
         .hero-bg::before {
             content: '🎉';
             position: absolute;
@@ -59,14 +80,31 @@
             font-size: 1.2rem;
             animation: bounceSmall 1s infinite;
         }
+
         @keyframes bounceSmall {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
         }
+
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
         }
+
         .card {
             background: #f9e7d7;
             border-radius: 10px;
@@ -74,6 +112,7 @@
             transition: transform 0.3s;
             position: relative;
         }
+
         .card::after {
             content: '';
             position: absolute;
@@ -82,33 +121,46 @@
             font-size: 0.8rem;
             color: #ff8787;
         }
+
         .card:hover {
             transform: scale(1.05);
         }
+
         .icon {
             font-size: 1.5rem;
             transition: color 0.3s;
         }
+
         .card:hover .icon {
             color: #ff8c61;
         }
+
         .cta-bg {
             background: linear-gradient(45deg, #6b5b95, #ff8787);
             padding: 1.5rem;
             border-radius: 10px;
         }
+
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
+
         .nav-shadow {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
+
 <body class="text-gray-800">
     <!-- Navigation Menu -->
     <nav class="bg-green-700 text-white p-3 fixed w-full z-20 top-0 nav-shadow">
@@ -120,7 +172,7 @@
             <ul class="flex space-x-2 md:space-x-4 text-xs md:text-sm">
                 <li><a href="#home" class="hover:text-yellow-200 transition-colors">Trang Chủ Vui Vẻ</a></li>
                 <li><a href="upload.html" class="hover:text-yellow-200 transition-colors">Rác Thành STEM Tuyệt!</a></li>
-                <li><a href="galary.html" class="hover:text-yellow-200 transition-colors">AI Hoạt Động Nhanh</a></li>
+                <li><a href="teach.html" class="hover:text-yellow-200 transition-colors">Giao án tái chế</a></li>
             </ul>
         </div>
     </nav>
@@ -128,15 +180,20 @@
     <!-- Hero Section -->
     <section id="home" class="hero-bg mx-2 md:mx-4 lg:mx-8 mt-16 md:mt-20 lg:mt-24">
         <div class="text-center">
-            <h1 class="text-2xl md:text-3xl lg:text-4xl font-semibold text-green-800 mb-2 fade-in">Chào Mừng Đến Với AI 4 Green!</h1>
-            <p class="text-sm md:text-base lg:text-lg text-green-600 mb-4 fade-in delay-200">Hãy cùng biến rác thành học liệu siêu vui, học mà chơi, chơi mà học nhé! Cùng bảo vệ Trái Đất với công nghệ siêu đỉnh!</p>
-            <a href="#features" class="bg-yellow-500 text-white px-3 py-2 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-full hover:bg-yellow-600 card inline-block">Khám Phá Ngay, Nhanh Như Chớp!</a>
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-semibold text-green-800 mb-2 fade-in">Chào Mừng Đến Với AI
+                4 Green!</h1>
+            <p class="text-sm md:text-base lg:text-lg text-green-600 mb-4 fade-in delay-200">Hãy cùng biến rác thành học
+                liệu siêu vui, học mà chơi, chơi mà học nhé! Cùng bảo vệ Trái Đất với công nghệ siêu đỉnh!</p>
+            <a href="#features"
+                class="bg-yellow-500 text-white px-3 py-2 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-full hover:bg-yellow-600 card inline-block">Khám
+                Phá Ngay, Nhanh Như Chớp!</a>
         </div>
     </section>
 
     <!-- Featured Functions Section -->
     <section id="features" class="py-8 md:py-10 mx-2 md:mx-4 lg:mx-8">
-        <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-green-800 text-center mb-4 fade-in">Các Tính Năng Vui Nhộn Của Chúng Ta!</h2>
+        <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-green-800 text-center mb-4 fade-in">Các Tính Năng Vui
+            Nhộn Của Chúng Ta!</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div class="card text-center fade-in delay-200">
                 <i class="ri-camera-line icon text-red-500"></i>
@@ -158,7 +215,8 @@
 
     <!-- AI Operation Steps Section -->
     <section class="py-8 md:py-10 mx-2 md:mx-4 lg:mx-8">
-        <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-green-800 text-center mb-4 fade-in">AI Của Chúng Ta Làm Gì Thế Nhỉ?</h2>
+        <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-green-800 text-center mb-4 fade-in">AI Của Chúng Ta Làm
+            Gì Thế Nhỉ?</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div class="card text-center fade-in delay-200">
                 <i class="ri-upload-cloud-line icon text-green-500"></i>
@@ -183,13 +241,40 @@
         </div>
     </section>
 
+    <!-- Community Section -->
+    <section class="py-8 md:py-10 mx-2 md:mx-4 lg:mx-8">
+        <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-green-800 text-center mb-4 fade-in">Cộng Đồng Tái Chế
+            Vui Vẻ!</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="card text-center fade-in delay-200">
+                <i class="ri-group-line icon text-orange-500"></i>
+                <h3 class="text-sm md:text-base lg:text-lg font-medium text-green-800">Kết Nối Cộng Đồng</h3>
+                <p class="text-xs">Gặp gỡ những người bạn yêu môi trường, cùng nhau lan tỏa tinh thần tái chế!</p>
+            </div>
+            <div class="card text-center fade-in delay-400">
+                <i class="ri-camera-3-line icon text-teal-500"></i>
+                <h3 class="text-sm md:text-base lg:text-lg font-medium text-green-800">Chụp & Chia Sẻ</h3>
+                <p class="text-xs">Chụp ảnh sản phẩm tái chế của bạn và đăng với #AI4Green #TaiCheVuiVe!</p>
+            </div>
+            <div class="card text-center fade-in delay-600">
+                <i class="ri-earth-line icon text-green-500"></i>
+                <h3 class="text-sm md:text-base lg:text-lg font-medium text-green-800">Bảo Vệ Trái Đất</h3>
+                <p class="text-xs">Cùng nhau biến rác thành kho báu, góp phần làm xanh hành tinh của chúng ta!</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Call to Action Section -->
     <section class="cta-bg mx-2 md:mx-4 lg:mx-8 mt-6">
         <div class="text-center">
-            <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2 fade-in">Hãy Chơi Cùng AI Ngay Hôm Nay!</h2>
-            <p class="text-sm md:text-base lg:text-lg text-white mb-4 fade-in delay-200">Cùng hàng ngàn bạn nhỏ biến rác thành học liệu siêu vui, bảo vệ Trái Đất và học tập thật hạnh phúc nhé!</p>
+            <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2 fade-in">Hãy Chơi Cùng AI Ngay Hôm Nay!
+            </h2>
+            <p class="text-sm md:text-base lg:text-lg text-white mb-4 fade-in delay-200">Cùng hàng ngàn bạn nhỏ biến rác
+                thành học liệu siêu vui, bảo vệ Trái Đất và học tập thật hạnh phúc nhé!</p>
             <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4 fade-in delay-400">
-                <a href="upload.html" class="bg-pink-500 text-white px-3 py-2 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-full hover:bg-pink-600 card">Bắt Đầu Cuộc Phiêu Lưu!</a>
+                <a href="upload.html"
+                    class="bg-pink-500 text-white px-3 py-2 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-full hover:bg-pink-600 card">Bắt
+                    Đầu Cuộc Phiêu Lưu!</a>
             </div>
         </div>
     </section>
@@ -199,4 +284,5 @@
         <p class="text-xs">© 2025 AI 4 green: Trí tuệ xanh cho giáo dục | Cập nhật 09:22 AM, 28/06/2025</p>
     </footer>
 </body>
+
 </html>
