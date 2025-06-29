@@ -4,9 +4,15 @@ import socketserver
 import urllib.request
 import urllib.parse
 import json
+import os
 from urllib.error import HTTPError
 
 class ProxyHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        # Serve index.html for root path
+        if self.path == '/':
+            self.path = '/index.html'
+        return super().do_GET()
     def do_POST(self):
         if self.path == '/det':
             try:
