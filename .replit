@@ -44,5 +44,5 @@ REPLIT_KEEP_PACKAGE_DEV_DEPENDENCIES = "1"
 
 [deployment]
 deploymentTarget = "cloudrun"
-run = ["sh", "-c", "cd frontend && python proxy.py"]
+run = ["sh", "-c", "python start_app.py"]
 build = ["sh", "-c", "uv cache clean && rm -f uv.lock && uv sync --no-cache --no-dev && cp backend/best.pt backend/ || echo 'Warning: best.pt already in place'"]
