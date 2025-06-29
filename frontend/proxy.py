@@ -8,6 +8,9 @@ import os
 from urllib.error import HTTPError
 
 class ProxyHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory='frontend', **kwargs)
+    
     def do_GET(self):
         # Serve index.html for root path
         if self.path == '/':
@@ -70,6 +73,11 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     PORT = 5000
+    # Change to the directory where HTML files are located
+    import os
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    
     with socketserver.TCPServer(("0.0.0.0", PORT), ProxyHandler) as httpd:
-        print(f"Serving at port {PORT}")
+        print(f"Serving frontend at port {PORT}")
+        print(f"Frontend available at: http://0.0.0.0:{PORT}")
         httpd.serve_forever()
